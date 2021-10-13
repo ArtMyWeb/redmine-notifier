@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  notifier:
+    build: '.'
+    restart: unless-stopped
+    environment:
+      REDMINE_API_KEY: ${REDMINE_API_KEY}
+      REDMINE_BASE_URL: ${REDMINE_BASE_URL}
+      REDMINE_GROUPS: ${REDMINE_GROUPS}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+      TZ: ${TZ}
+      SCHEDULE_TEMPLATE: ${SCHEDULE_TEMPLATE}
+      ISSUE_STATUS_ID: ${ISSUE_STATUS_ID}
+    logging:
+      options:
+        max-size: 100m
+        max-file: "5"
+  

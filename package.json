@@ -1,0 +1,32 @@
+{
+  "name": "redmine-notifier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "types": "dist/app.d.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "copy-files": "copyfiles -u 1 src/**/*.html dist/",
+    "build": "tsc && yarn copy-files",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.10.3",
+    "@types/node-cron": "^3.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.22.0",
+    "copyfiles": "^2.4.1",
+    "node-cron": "^3.0.0",
+    "nodemon": "^2.0.12",
+    "telegraf": "^4.4.2",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3",
+    "dotenv": "^10.0.0",
+    "handlebars": "^4.7.7",
+    "path": "^0.12.7"
+  }
+}

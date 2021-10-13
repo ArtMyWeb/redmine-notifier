@@ -1,0 +1,11 @@
+<b>User: </b> {{user}}
+
+{{#activity}}
+<pre>    </pre><b>Activity: </b>{{ activity }}
+<pre>    </pre><b>Project: </b><a href="{{ project_link }}">{{ project_name }}</a>
+<pre>    </pre><b>Issue: </b><a href="{{ issue_link }}">{{ issue_id }}</a>
+<pre>    </pre><b>Comment: </b>{{ comment }}
+<pre>    </pre><b>Spent Hours: </b>{{ spent_hours }}h
+
+{{/activity}}
+<b>Total Hours: </b>{{ totalHours }}h
