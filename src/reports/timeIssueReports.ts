@@ -54,9 +54,8 @@ export class TimeIssueReports extends RedminesReport {
                 user_id,
                 from
             }
-            !!to ? options.to = to : options.to = from
-            const data = await TimeIssueReports.redmine.listTimeEntries(options)
-            return data
+            options.to = !!to ? to : from
+            return await TimeIssueReports.redmine.listTimeEntries(options)
         }
         catch (err) {
             MyError.showError(err)
@@ -74,7 +73,7 @@ export class TimeIssueReports extends RedminesReport {
     private prepareReportDatByUser(list: RedmineTS.TimeEntries.TimeEntries, user: Report.User): Report.ReportData {
         let totalHours = 0
         const activity: Report.Activity[] = this.getActivity(list)
-        activity.map((item: Report.Activity) => totalHours += item.spent_hours)
+        activity.forEach((item: Report.Activity) => totalHours += item.spent_hours)
         const fullname: string = `${user.firstname} ${user.lastname}`
         const result: Report.ReportData = {
             user: fullname,
@@ -92,7 +91,7 @@ export class TimeIssueReports extends RedminesReport {
      */
     private getActivity(list: RedmineTS.TimeEntries.TimeEntries): Report.Activity[] {
         let data: Report.Activity[] = []
-        list.time_entries.map((item: RedmineTS.TimeEntries.TimeEntry) => {
+        list.time_entries.forEach((item: RedmineTS.TimeEntries.TimeEntry) => {
             const tmp: Report.Activity = {
                 activity: item.activity?.name || '',
                 project_id: item.project.id,
@@ -115,32 +114,13 @@ export class TimeIssueReports extends RedminesReport {
      */
     public async getReport() {
         try {
-            if (typeof config.group === 'object') {
+            if (typeof config.group !== 'object') return null
+            console.log()
 
-                const date = new Date().toISOString().slice(0, 10)
+            const date = new Date().toISOString().slice(0, 10)
 
-                for (const [key, value] of Object.entries(config.group)) {
-
-                    const users: Report.User[] = await this.getUsersList(value)
-                    const tBot = new TelegramHendler()
-                    const promises: Promise<any>[] = []
-                    for (let i = 0; i < users.length; i++) {
-                        const data: RedmineTS.TimeEntries.TimeEntries = await this.getTimeEntriesList(users[i].id, date)
-                        const item: Report.ReportData = this.prepareReportDatByUser(data, users[i])
-                        if (item.totalHours < 8) {
-                            try {
-                                promises.push(new Promise((resolve, reject) => {
-                                    setTimeout(() => resolve(tBot.sendActivityNotification(item)), i * 3000)
-                                }))
-                            } catch (err) {
-                                MyError.showError(err)
-                            }
-                        }
-                    }
-                    if (promises.length) {
-                        return Promise.all(promises)
-                    }
-                }
+            for (const value of Object.values(config.group)) {
+                return await this.prepareAndSend(value, date)
             }
 
         }
@@ -148,6 +128,37 @@ export class TimeIssueReports extends RedminesReport {
             MyError.showError(err)
         }
         return null
+    }
+
+    /**
+     * 
+     * @param group_id 
+     * @param date 
+     * @returns 
+     */
+    private async prepareAndSend(group_id: number, date: string): Promise<any> {
+
+        const users: Report.User[] = await this.getUsersList(group_id)
+        const tBot = new TelegramHendler()
+        const promises: Promise<any>[] = []
+
+        for (let i = 0; i < users.length; i++) {
+            const data: RedmineTS.TimeEntries.TimeEntries = await this.getTimeEntriesList(users[i].id, date)
+            const item: Report.ReportData = this.prepareReportDatByUser(data, users[i])
+            if (item.totalHours < 8) {
+                try {
+                    promises.push(new Promise((resolve, reject) => {
+                        setTimeout(() => resolve(tBot.sendActivityNotification(item)), i * 3000)
+                    }))
+                } catch (err) {
+                    MyError.showError(err)
+                }
+            }
+        }
+
+        if (promises.length) return Promise.all(promises)
+
+        return Promise.all([])
     }
 }
 

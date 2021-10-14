@@ -4,7 +4,7 @@
 
     REDMINE_API_KEY: redmine API key
     REDMINE_BASE_URL: redmine base URL (https://redmine.com)
-    REDMINE_GROUPS: {key: value, key1: value1}
+    REDMINE_GROUPS: {group_name1: group_id1, group_name2: group_id2}
     TELEGRAM_BOT_TOKEN: telegram bot token
     TELEGRAM_CHAT_ID: telegram chat id
     TZ: Time Zone (Europe/Kiev)

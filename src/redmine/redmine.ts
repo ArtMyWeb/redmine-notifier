@@ -27,12 +27,12 @@ export class Redmine {
      * @param obj 
      */
     private static _deepJoinArrays(obj: any) {
-        const newObj: any = {};
+        const newObj: any = {}
         for (const k in obj) {
-            const v = obj[k];
-            newObj[k] = (typeof v === "object") ? (Array.isArray(v)) ? v.join(",") : Redmine._deepJoinArrays(v) : v;
+            const v = obj[k]
+            newObj[k] = (typeof v === "object") ? (Array.isArray(v)) ? v.join(",") : Redmine._deepJoinArrays(v) : v
         }
-        return newObj;
+        return newObj
     }
 
     /**

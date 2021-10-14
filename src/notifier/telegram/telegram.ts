@@ -30,7 +30,7 @@ class Telegram implements Notifier {
     public async sendActivityReport(item: Report.ReportData): Promise<void> {
 
         const filePath = path.join(__dirname, '/templates/activity.html')
-        const fileData = await fs.readFileSync(filePath).toString()
+        const fileData = fs.readFileSync(filePath).toString()
 
         const template = Handlebars.compile(fileData)
         const message = template(item)
@@ -40,7 +40,7 @@ class Telegram implements Notifier {
 
     public async sendIssueReport(item: IssueReport.ReportData): Promise<void> {
         const filePath = path.join(__dirname, '/templates/issue.html')
-        const fileData = await fs.readFileSync(filePath).toString()
+        const fileData = fs.readFileSync(filePath).toString()
 
         const template = Handlebars.compile(fileData)
         const message = template(item)
